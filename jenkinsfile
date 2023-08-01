@@ -13,9 +13,22 @@ pipeline{
         }
         stage("build"){
             steps{
-                sh "cat jenkinsfile"
+                echo 'lastSuccessfulCommit = ' + lastSuccessfulCommit
+                // sh "cat jenkinsfile"
+                // sh "git show --pretty=format: --name-only | grep README"
             }
         }
     }
+}
+
+def lastSuccessfulCommit = getLastSuccessfulCommit()
+
+def getLastSuccessfulCommit() {
+  def lastSuccessfulHash = null
+  def lastSuccessfulBuild = currentBuild.rawBuild.getPreviousSuccessfulBuild()
+  if ( lastSuccessfulBuild ) {
+    lastSuccessfulHash = commitHashForBuild( lastSuccessfulBuild )
+  }
+  return lastSuccessfulHash
 }
 
