@@ -19,7 +19,7 @@ pipeline{
                 def diff = publisher.getDiff()
                 echo "Diff = " + diff
                 if (!diff) {
-                    echo 'We are have no diff'
+                    echo 'We are have no diff !'
                 }
                 }
             }
