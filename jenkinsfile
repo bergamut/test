@@ -14,12 +14,12 @@ pipeline{
         stage("build"){
             steps{
                 script {
-                def publisher = LastChanges.getLastChangesPublisher null, "SIDE", "WORD", true, true, "", "", "", "", ""
+                def publisher = LastChanges.getLastChangesPublisher "LAST_SUCCESSFUL_BUILD", "SIDE", "WORD", true, true, "", "", "", "", ""
                 publisher.publishLastChanges()
                 def diff = publisher.getDiff()
                 echo "Diff = " + diff
                 if (!diff) {
-                    echo 'We are have not a diff'
+                    echo 'We are have no diff'
                 }
                 }
             }
