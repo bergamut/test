@@ -13,35 +13,17 @@ pipeline{
         }
         stage("build"){
             steps{
-                echo "lastSuccessfulCommit = " + lastSuccessfulCommit
-                // sh "cat jenkinsfile"
-                // sh "git show --pretty=format: --name-only | grep README"
+                script {
+                def publisher = LastChanges.getLastChangesPublisher null, "SIDE", "WORD", true, true, "", "", "", "", ""
+                publisher.publishLastChanges()
+                def diff = publisher.getDiff()
+                echo "Diff = " + diff
+                if (!diff) {
+                    echo 'We are have not a diff'
+                }
+                }
             }
         }
     }
-}
-
-def lastSuccessfulCommit = getLastSuccessfulCommit()
-
-def getLastSuccessfulCommit() {
-  def lastSuccessfulHash = null
-  def lastSuccessfulBuild = currentBuild.rawBuild.getPreviousSuccessfulBuild()
-  if ( lastSuccessfulBuild ) {
-    lastSuccessfulHash = commitHashForBuild( lastSuccessfulBuild )
-  }
-  def currentCommit = commitHashForBuild(currentBuild.rawBuild)
-  echo "lastSuccessfulBuild = " + lastSuccessfulBuild
-  echo "lastSuccessfulHash = " + lastSuccessfulHash
-  echo "currentCommit = " + currentCommit
-  return lastSuccessfulHash
-}
-
-/**
- * Gets the commit hash from a Jenkins build object, if any
- */
-@NonCPS
-def commitHashForBuild( build ) {
-  def scmAction = build?.actions.find { action -> action instanceof jenkins.scm.api.SCMRevisionAction }
-  return scmAction?.revision?.hash
 }
 
