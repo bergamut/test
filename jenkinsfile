@@ -1,0 +1,21 @@
+pipeline{
+    agent any
+    stages{
+        stage("checkout"){
+            steps{
+                git branch: 'main ', credentialsId: 'github-token', url: 'https://github.com/bergamut/test.git'
+                catchError(message:'skipping because unstable',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
+                    retry(3){
+                        sh 'ls -lai'
+                    }
+                }
+            }
+        }
+        stage("build"){
+            steps{
+                sh "cat jenkinsfile"
+            }
+        }
+    }
+}
+
